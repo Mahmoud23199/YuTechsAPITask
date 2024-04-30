@@ -1,6 +1,10 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using YuTechsBL.GenericRepository;
+using YuTechsBL.Repository;
+using YuTechsBL.UnitOfWork;
 using YuTechsEF.Context;
 
 namespace YuTechsAPI
@@ -20,6 +24,12 @@ namespace YuTechsAPI
             builder.Services.AddDbContext<YuAppDbContext>(option =>
             option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
             p=>p.MigrationsAssembly(typeof (YuAppDbContext).Assembly.FullName)));
+
+            builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWorkRepo>();
+
+            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             var app = builder.Build();
 

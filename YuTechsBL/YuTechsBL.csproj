@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YuTechsEF\YuTechsEF.csproj" />
+  </ItemGroup>
+
 </Project>

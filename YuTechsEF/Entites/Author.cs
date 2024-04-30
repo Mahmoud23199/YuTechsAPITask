@@ -19,6 +19,6 @@ namespace YuTechsEF.Entity
         public string Country { get; set; }
         public string ?Biography { get; set; }
 
-        public IEnumerable<News>News { get; set; }=new List<News>();
+        public IEnumerable<News>?News { get; set; }=new List<News>();
     }
 }

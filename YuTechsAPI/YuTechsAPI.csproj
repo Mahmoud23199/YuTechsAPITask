@@ -16,10 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\YuTechsBL\YuTechsBL.csproj" />
     <ProjectReference Include="..\YuTechsEF\YuTechsEF.csproj" />
   </ItemGroup>
 
