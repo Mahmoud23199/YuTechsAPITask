@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using YuTechsEF.Entity;
 
 namespace YuTechsEF.Context
 {
-    public class YuAppDbContext:DbContext
+    public class YuAppDbContext:IdentityDbContext<ApplicationUser>
     {
         public DbSet<Author> Author { get; set; }
         public DbSet<News> News { get; set; }

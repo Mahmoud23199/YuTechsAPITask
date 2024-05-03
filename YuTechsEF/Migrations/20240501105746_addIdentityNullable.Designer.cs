@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YuTechsEF.Context;
 
@@ -11,9 +12,11 @@ using YuTechsEF.Context;
 namespace YuTechsEF.Migrations
 {
     [DbContext(typeof(YuAppDbContext))]
-    partial class YuAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240501105746_addIdentityNullable")]
+    partial class addIdentityNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

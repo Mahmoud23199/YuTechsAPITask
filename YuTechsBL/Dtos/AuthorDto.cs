@@ -9,6 +9,7 @@ namespace YuTechsBL.Dtos
 {
     public class AuthorDto
     {
+
         public string AuthorName { get; set; }
         public string Country { get; set; }
         public string? Biography { get; set; }

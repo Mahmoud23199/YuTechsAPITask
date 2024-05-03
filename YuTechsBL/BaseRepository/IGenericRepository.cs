@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using YuTechsBL.Const;
 
 namespace YuTechsBL.Repository
 {
@@ -13,14 +14,16 @@ namespace YuTechsBL.Repository
 
         Task<T> GetByIdAsync(Expression<Func<T, bool>> match, string[] includes = null);
 
-        Task<T> GetByNameAsync(Expression<Func<T, bool>> match, string[] includes = null);
+        Task<IEnumerable<T>> GetByNameAsync(Expression<Func<T, bool>> match, string[] includes = null);
 
         Task<IEnumerable<T>> GetAllAsync(string[] includes);
 
         Task UpdateAsync(Expression<Func<T, bool>> match, T entity);
-
-        Task DeleteAsync(T entity);
+        //Task DeleteByNameAsync(Expression<Func<T, bool>> match);
         Task DeleteByIdAsync(Expression<Func<T, bool>> match);
+
+        Task<IEnumerable<T>> OrderItems(Expression<Func<T, bool>> filter = null,Expression < Func<T, object>> orderBy=null, string orderByDirction=OrderBy.Ascending, string[] includes = null);
+
 
     }
 }
