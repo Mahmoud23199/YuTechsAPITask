@@ -10,4 +10,8 @@
     <ProjectReference Include="..\YuTechsEF\YuTechsEF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\ImgServices\" />
+  </ItemGroup>
+
 </Project>

@@ -90,6 +90,8 @@ namespace YuTechsBL.GenericRepository
                 await _context.SaveChangesAsync();
 
             }
+            else
+                throw new KeyNotFoundException("Item not found");
         }
 
         public async Task AddedAsync(T entity)

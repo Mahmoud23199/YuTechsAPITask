@@ -20,7 +20,7 @@ namespace YuTechsAPI.Controllers
             this._unitOfWork= unitOfWork;
         }
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetAll()
         {
             var items = await _unitOfWork.Authors.GetAllAsync(new string[] { "News" });
@@ -31,6 +31,8 @@ namespace YuTechsAPI.Controllers
                     AuthorName = i.AuthorName,
                     Id = i.Id,
                     Country = i.Country,
+                    Biography=i.Biography,
+                    
                     RelatNews = i.News.Select(i => new AuthRelatNewsDto
                     {
                         Id = i.Id,

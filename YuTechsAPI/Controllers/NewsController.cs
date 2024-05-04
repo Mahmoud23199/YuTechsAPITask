@@ -28,7 +28,7 @@ namespace YuTechsAPI.Controllers
             {
                 var newsData = items.Select(i => new NewsDto { Id = i.Id, CreationDate = i.CreationDate, Description = i.Description,
                     ImageUrl = i.ImageUrl, Title = i.Title, NewsContent = i.NewsContent, PublicationDate = i.PublicationDate,
-                    Author = new AuthorDto {AuthorName=i.Author.AuthorName,Country=i.Author.Country,Biography=i.Author.Biography},
+                    Author = new AuthorDto {AuthorName=i.Author.AuthorName,Country=i.Author.Country,Biography=i.Author.Biography,AuthorId=i.AuthorId},
                 });
                 return Ok(newsData);
 
@@ -56,7 +56,9 @@ namespace YuTechsAPI.Controllers
                     {
                         AuthorName = item.Author.AuthorName,
                         Country = item.Author.Country,
-                        Biography = item.Author.Biography
+                        Biography = item.Author.Biography,
+                        AuthorId = item.AuthorId
+                        
                     }
                 };
                 return Ok(newsData);
@@ -118,13 +120,13 @@ namespace YuTechsAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> Update( News news)
         {
-            if (news.AuthorId == 0)
+            if (news.Id == 0)
                 return BadRequest("Invalid Author Id"); 
             
             if (ModelState.IsValid)
             {
                 await _unitOfWork.News.UpdateAsync(i => true,news);
-                return Ok("News updated Successfully");
+                return Ok(news);
             }
             else return BadRequest(ModelState);
 
@@ -173,10 +175,30 @@ namespace YuTechsAPI.Controllers
                     break;
             }
 
-            var items = await _unitOfWork.News.OrderItems(filter,orderByExpression ,orderByDirection);
+            var items = await _unitOfWork.News.OrderItems(filter,orderByExpression ,orderByDirection,new string[] {"Author"});
 
-            return Ok(items);
+
+            if (items != null)
+            {
+                var newsData = items.Select(i => new NewsDto
+                {
+                    Id = i.Id,
+                    CreationDate = i.CreationDate,
+                    Description = i.Description,
+                    ImageUrl = i.ImageUrl,
+                    Title = i.Title,
+                    NewsContent = i.NewsContent,
+                    PublicationDate = i.PublicationDate,
+                    Author = new AuthorDto { AuthorName = i.Author.AuthorName, Country = i.Author.Country, Biography = i.Author.Biography, AuthorId = i.AuthorId },
+                });
+                return Ok(newsData);
+
+            }
+            else return BadRequest("No Data Found");
+
         }
+
+
     }
 }
 

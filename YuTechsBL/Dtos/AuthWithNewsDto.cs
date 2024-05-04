@@ -15,6 +15,9 @@ namespace YuTechsBL.Dtos
 
         public string Country { get; set; }
 
+        public string? Biography { get; set; }
+
+
         public List<AuthRelatNewsDto> RelatNews { get; set; }
     }
 }
