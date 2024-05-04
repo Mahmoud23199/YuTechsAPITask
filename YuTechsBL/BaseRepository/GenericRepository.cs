@@ -96,9 +96,8 @@ namespace YuTechsBL.GenericRepository
 
         public async Task AddedAsync(T entity)
         {
-                await _context.Set<T>().AddAsync(entity);
-                await _context.SaveChangesAsync();
-
+            await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
        public async Task<IEnumerable<T>> OrderItems(Expression<Func<T, bool>> filter = null, Expression<Func<T, object>> orderBy = null, string orderByDirction = "ASC", string[] includes = null)

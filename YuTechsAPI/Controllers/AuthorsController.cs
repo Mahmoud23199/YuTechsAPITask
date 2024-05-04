@@ -61,6 +61,7 @@ namespace YuTechsAPI.Controllers
                     AuthorName = authorItem.AuthorName,
                     Id = authorItem.Id,
                     Country = authorItem.Country,
+                    Biography = authorItem.Biography,
                     RelatNews = authorItem.News.Select(i => new AuthRelatNewsDto
                     {
                         Id = i.Id,

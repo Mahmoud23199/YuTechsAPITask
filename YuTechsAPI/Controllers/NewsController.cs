@@ -26,13 +26,21 @@ namespace YuTechsAPI.Controllers
             var items = await _unitOfWork.News.GetAllAsync(new string[] { "Author" });
             if (items != null)
             {
-                var newsData = items.Select(i => new NewsDto { Id = i.Id, CreationDate = i.CreationDate, Description = i.Description,
-                    ImageUrl = i.ImageUrl, Title = i.Title, NewsContent = i.NewsContent, PublicationDate = i.PublicationDate,
-                    Author = new AuthorDto {AuthorName=i.Author.AuthorName,Country=i.Author.Country,Biography=i.Author.Biography,AuthorId=i.AuthorId},
+                var newsData = items.Select(i => new NewsDto
+                {
+                    Id = i.Id,
+                    CreationDate = i.CreationDate,
+                    Description = i.Description,
+                    ImageUrl = i.ImageUrl,
+                    Title = i.Title,
+                    NewsContent = i.NewsContent,
+                    PublicationDate = i.PublicationDate,
+                    Author = new AuthorDto { AuthorName = i.Author.AuthorName, Country = i.Author.Country, Biography = i.Author.Biography, AuthorId = i.AuthorId },
                 });
                 return Ok(newsData);
 
-            }else  return BadRequest("No Data Found"); 
+            }
+            else return BadRequest("No Data Found");
 
         }
 
@@ -58,7 +66,7 @@ namespace YuTechsAPI.Controllers
                         Country = item.Author.Country,
                         Biography = item.Author.Biography,
                         AuthorId = item.AuthorId
-                        
+
                     }
                 };
                 return Ok(newsData);
@@ -114,18 +122,18 @@ namespace YuTechsAPI.Controllers
                 };
                 return Ok(newsData);
             }
-            else return BadRequest(" Not Found News with name:" + name );
+            else return BadRequest(" Not Found News with name:" + name);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update( News news)
+        public async Task<IActionResult> Update(News news)
         {
             if (news.Id == 0)
-                return BadRequest("Invalid Author Id"); 
-            
+                return BadRequest("Invalid Author Id");
+
             if (ModelState.IsValid)
             {
-                await _unitOfWork.News.UpdateAsync(i => true,news);
+                await _unitOfWork.News.UpdateAsync(i => true, news);
                 return Ok(news);
             }
             else return BadRequest(ModelState);
@@ -140,22 +148,94 @@ namespace YuTechsAPI.Controllers
             {
                 return BadRequest("News not Found");
             }
-            else 
+            else
             {
-                await _unitOfWork.News.DeleteByIdAsync(i=>i.Id==id);
+                await _unitOfWork.News.DeleteByIdAsync(i => i.Id == id);
                 return Ok("News With id: " + id + " deleted Successfully");
-            
-            }    
+
+            }
         }
+
+
+        [HttpPost("add-withImg")]
+        public async Task<IActionResult> Add(NewsIDto newsDto)
+        {
+            if (ModelState.IsValid)
+            {
+                if (newsDto.AuthorId == 0)
+                {
+                    return BadRequest("AuthorId is required.");
+                }
+
+                string imageUrl = await WriteFile(newsDto.ImageFile); // Get the image URL
+
+                // Create a new News entity
+                var news = new News
+                {
+                    Title = newsDto.Title,
+                    Description = newsDto.Description,
+                    NewsContent = newsDto.NewsContent,
+                    ImageUrl = imageUrl, // Set the image URL
+                    PublicationDate = newsDto.PublicationDate,
+                    CreationDate = DateTime.Now,
+                    AuthorId = newsDto.AuthorId,
+                  
+                };
+
+                await _unitOfWork.News.AddedAsync(news); // Add news to database
+                return CreatedAtAction(nameof(GetById), new { id = news.Id }, news);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        private async Task<string> WriteFile(IFormFile file)
+        {
+            string filename = "";
+            try
+            {
+                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                filename = DateTime.Now.Ticks.ToString() + extension;
+
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Files");
+
+                if (!Directory.Exists(filepath))
+                {
+                    Directory.CreateDirectory(filepath);
+                }
+
+                var exactpath = Path.Combine(filepath, filename);
+                using (var stream = new FileStream(exactpath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Concatenate base URL with relative file path
+                string baseUrl = "http://localhost:5084/";
+                string relativePath = "Upload/Files/" + filename;
+                string fileUrl = baseUrl + relativePath;
+
+                return fileUrl;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
 
 
         [HttpGet("GetNewsOrderBy")]
         public async Task<IActionResult> GetNews(string newsNameFilter = null, string orderBy = "Id", string orderByDirection = "ASC")
         {
-            Expression<Func<News, bool>> filter=null;
-            if (!string.IsNullOrEmpty(newsNameFilter)) 
+            Expression<Func<News, bool>> filter = null;
+            if (!string.IsNullOrEmpty(newsNameFilter))
             {
-              filter=i=>i.Title.Contains(newsNameFilter);
+                filter = i => i.Title.Contains(newsNameFilter);
             }
 
             Expression<Func<News, object>> orderByExpression = null;
@@ -175,7 +255,7 @@ namespace YuTechsAPI.Controllers
                     break;
             }
 
-            var items = await _unitOfWork.News.OrderItems(filter,orderByExpression ,orderByDirection,new string[] {"Author"});
+            var items = await _unitOfWork.News.OrderItems(filter, orderByExpression, orderByDirection, new string[] { "Author" });
 
 
             if (items != null)
@@ -197,6 +277,7 @@ namespace YuTechsAPI.Controllers
             else return BadRequest("No Data Found");
 
         }
+
 
 
     }
